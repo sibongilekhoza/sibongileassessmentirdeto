@@ -1,0 +1,37 @@
+/* button.css */
+
+/* Default button styles */
+.button {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Primary button styles */
+.primary-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+}
+
+/* Secondary button styles */
+.secondary-button {
+  background-color: #f2f2f2;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.secondary-button:hover {
+  background-color: #e6e6e6;
+}
