@@ -1,0 +1,26 @@
+.post-list {
+  margin-top: 20px;
+}
+
+.post-item {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.post-item h2 {
+  margin-top: 0;
+}
+
+.post-item p {
+  margin-bottom: 5px;
+}
+
+.post-item a {
+  color: #000;
+  text-decoration: none;
+}
+
+.post-item a:hover {
+  text-decoration: underline;
+}

@@ -8,27 +8,46 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.irdeto.sibongileassessment.model.Post;
+import com.irdeto.sibongileassessment.model.SocialMediaAnalyser;
 import com.irdeto.sibongileassessment.model.User;
-import com.irdeto.sibongileassessment.service.SocialMediaAnalyserService;
+import com.irdeto.sibongileassessment.service.PostService;
+import com.irdeto.sibongileassessment.service.UserService;
 
 @RestController
-@RequestMapping("/analytics")
+@RequestMapping("/social-media-analyser")
 public class SocialMediaAnalyserController
 {
 	
-	private final SocialMediaAnalyserService socialMediaAnalyserService;
 
-    @Autowired
-    public SocialMediaAnalyserController(SocialMediaAnalyserService socialMediaAnalyserService) {
-        this.socialMediaAnalyserService = socialMediaAnalyserService;
+	
+	private  SocialMediaAnalyser socialMediaAnalyser;
+
+
+
+    @GetMapping("/most-active-user")
+    public User getMostActiveUser() {
+        return socialMediaAnalyser.findMostActiveUser();
     }
 
-    
-    @GetMapping("/mostActiveUsers")
-    public List<User> getMostActiveUsers() {
-        int count = 5; // Set the desired count of most active users
-        return socialMediaAnalyserService.findMostActiveUsers(count);
+    @GetMapping("/least-active-user")
+    public User getLeastActiveUser() {
+        return socialMediaAnalyser.findLeastActiveUser();
     }
-    
- 
+
+    @GetMapping("/most-liked-post")
+    public Post getMostLikedPost() {
+        return socialMediaAnalyser.findMostLikedPost();
+    }
+
+    @GetMapping("/most-commented-post")
+    public Post getMostCommentedPost() {
+        return socialMediaAnalyser.findMostCommentedPost();
+    }
+
+    @GetMapping("/most-engaging-user")
+    public User getMostEngagingUser() {
+        return socialMediaAnalyser.findMostEngagingUser();
+    }
+
 }

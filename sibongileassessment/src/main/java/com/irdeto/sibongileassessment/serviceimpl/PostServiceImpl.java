@@ -1,5 +1,6 @@
 package com.irdeto.sibongileassessment.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class PostServiceImpl implements PostService
 {
-	
-	private final PostRepo postRepo;
+	@Autowired
+	private  PostRepo postRepo;
 
-    @Autowired
-    public PostServiceImpl(PostRepo postRepo) {
-        this.postRepo = postRepo;
-    }
 
     @Override
     public Post createPost(Post post) {
@@ -45,8 +42,10 @@ public class PostServiceImpl implements PostService
     }
 
     @Override
-    public void deletePost(Long id) {
+    public ArrayList<Post> deletePost(Long id) {
     	postRepo.deleteById(id);
+    	
+    	 return postRepo.findAll();
     }
 
     @Override
@@ -60,5 +59,34 @@ public class PostServiceImpl implements PostService
 		return 0;
 	}
 
+	@Override
+	public int getLikesCount(Long postId) {
+		 Post post = getPostById(postId);
+	        if (post != null) {
+	            return post.getLikes();
+	        }
+	        return 0;
+	}
+
+	@Override
+	public void likePost(Long postId) {
+		 Post post = getPostById(postId);
+	        if (post != null) {
+	            post.addLike();
+	        }
+		
+	}
+
+	@Override
+	public void unlikePost(Long postId) {
+
+		Post post = getPostById(postId);
+        if (post != null) {
+            post.removeLike();
+        }
+    }
+		
+	}
+
 	
-}
+

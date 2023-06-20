@@ -1,14 +1,18 @@
 package com.irdeto.sibongileassessment.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.irdeto.sibongileassessment.model.Comment;
 import com.irdeto.sibongileassessment.model.Post;
@@ -18,7 +22,7 @@ import com.irdeto.sibongileassessment.service.PostService;
 import com.irdeto.sibongileassessment.service.UserService;
 
 @Controller
-@RequestMapping("/social-media")
+@RequestMapping("/api/social-media")
 public class SocialMediaController
 {
 	
@@ -32,6 +36,26 @@ public class SocialMediaController
         this.postService = postService;
         this.commentService = commentService;
     }
+    
+    @GetMapping("/userlogin")
+    public String showLoginForm() {
+        return "userlogin";
+    }
+    
+    @PostMapping("/userlogin")
+    public String login(@RequestParam("username") String username,
+                        @RequestParam("password") String password,
+                        Model model) {
+        
+        if (username.equals("admin") && password.equals("password")) {
+            return "redirect:/post";
+        }
+
+        
+        model.addAttribute("error", "Invalid username or password");
+        return "userlogin";
+    }
+    
 
     @RequestMapping(value = "/userform", method =RequestMethod.GET )
 	public String RegistaPage(ModelMap model)
@@ -47,7 +71,7 @@ public class SocialMediaController
     @PostMapping("/create")
     public String createUser(User user) {
         userService.createUser(user);
-        return "redirect:/social-media/users";
+        return "redirect:/social-media/userlogin";
     }
     
     @GetMapping("/users")
@@ -58,21 +82,41 @@ public class SocialMediaController
     }
     
     
-    @PostMapping("/posts/create")
+
+    
+    @PostMapping("/post/create")
     public String createPost(Post post) {
         postService.createPost(post);
+        return "redirect:/social-media/postform";
+    }
+    
+    @GetMapping("/post")
+    public String getPosts(Model model) {
+        model.addAttribute("postList", postService.getAllPosts());
+        model.addAttribute("totalPosts", postService.getTotalPosts());
         return "redirect:/social-media/posts";
     }
     
-    @GetMapping("/posts")
-    public String getPosts(Model model) {
-        model.addAttribute("posts", postService.getAllPosts());
-        model.addAttribute("totalPosts", postService.getTotalPosts());
-        return "posts";
+    @GetMapping("/post/{postId}")
+    public String viewPost(@PathVariable long postId, Model model) {
+        Post post = postService.getPostById(postId);
+        int likesCount = postService.getLikesCount(postId);
+
+        model.addAttribute("thepost", post);
+        model.addAttribute("likesCount", likesCount);
+
+        return "post";
+    }
+    
+    @DeleteMapping("/deletepost")
+    public void deletePost(Long postId)
+    {
+    	postService.deletePost(postId);
+    	
     }
     
     
-    @PostMapping("/posts/{postId}/comments/create")
+    @PostMapping("/post/{postId}/comments/create")
     public String createComment(@PathVariable Long postId, Comment comment) {
         Post post = postService.getPostById(postId);
         comment.setPost(post);
@@ -81,12 +125,24 @@ public class SocialMediaController
     }
     
     
-    @GetMapping("/posts/{postId}/comments")
+    @GetMapping("/post/{postId}/comments")
     public String getComments(@PathVariable Long postId, Model model) {
         Post post = postService.getPostById(postId);
         model.addAttribute("post", post);
         model.addAttribute("comments", commentService.getCommentsByPost(post));
         return "comments";
+    }
+    
+    @PostMapping("/like/{postId}")
+    public String likePost(@PathVariable Long postId) {
+        postService.likePost(postId);
+        return "redirect:/post/{postId}";
+    }
+
+    @PostMapping("/unlike/{postId}")
+    public String unlikePost(@PathVariable Long postId) {
+        postService.unlikePost(postId);
+        return "redirect:/post/{postId}";
     }
 
 }
